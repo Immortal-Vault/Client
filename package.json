@@ -1,6 +1,6 @@
 {
   "name": "immortal-vault-client",
-  "productName": "immortal-vault-client",
+  "productName": "Immortal Vault",
   "version": "1.0.0",
   "description": "Immortal Vault Client",
   "main": ".webpack/main",

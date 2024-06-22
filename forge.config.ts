@@ -13,6 +13,8 @@ import { rendererConfig } from './webpack.renderer.config';
 
 const config: ForgeConfig = {
   packagerConfig: {
+    executableName: 'Immortal Vault',
+    name: 'Immortal Vault',
     icon: './images/icon',
     asar: true,
   },

@@ -1,5 +1,12 @@
-import { createRoot } from 'react-dom/client';
+import { createTheme, MantineProvider } from "@mantine/core";
 import Main from "./main";
 
-const root = createRoot(document.body);
-root.render(<Main/>);
+const theme = createTheme({});
+
+export default function App() {
+    return (
+        <MantineProvider theme={theme} defaultColorScheme={'dark'}>
+            <Main/>
+        </MantineProvider>
+    )
+}

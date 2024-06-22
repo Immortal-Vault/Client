@@ -1,4 +1,5 @@
 ﻿import { useState } from "react";
+import {Title} from "@mantine/core";
 
 export default function Main() {
     const [state, setState] = useState('OFF');
@@ -17,7 +18,7 @@ export default function Main() {
 
     return (
         <>
-            <h2>Server response is: {state}</h2>
+            <Title order={1}>Server response is: {state}</Title>
         </>
     )
 }

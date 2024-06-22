@@ -23,9 +23,6 @@ const createWindow = (): void => {
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
-
   mainWindow.webContents.session.webRequest.onBeforeSendHeaders(
       (details, callback) => {
         callback({ requestHeaders: { Origin: '*', ...details.requestHeaders } });

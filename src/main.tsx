@@ -1,24 +1,29 @@
 ﻿import { useState } from "react";
-import {Title} from "@mantine/core";
+import {Center, Flex, Loader, Title} from "@mantine/core";
 
 export default function Main() {
-    const [state, setState] = useState('OFF');
+    const [serverState, setServerState] = useState(false);
 
     setInterval(async () => {
         try {
-            const response = await fetch('http://localhost:3001/ping', {
+            await fetch('http://localhost:3001/ping', {
                 method: 'GET'
             })
 
-            setState(response.statusText);
+            setServerState(true);
         } catch {
-            setState('OFF')
+            setServerState(false)
         }
     }, 50);
 
     return (
         <>
-            <Title order={1}>Server response is: {state}</Title>
+            <Center>
+                <Flex direction={'column'} align={'center'} gap={'1rem'}>
+                    <Title order={1}>Server is {serverState ? 'up2date' : 'down'}</Title>
+                    {!serverState && <Loader color="blue" />}
+                </Flex>
+            </Center>
         </>
     )
 }

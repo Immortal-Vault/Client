@@ -20,15 +20,15 @@ const config: ForgeConfig = {
       config: {
         repository: {
           owner: 'Immortal-Vault',
-          name: 'Client'
+          name: 'Client',
         },
         authToken: githubToken,
         draft: false,
         prerelease: true,
         force: true,
         generateReleaseNotes: true,
-      }
-    }
+      },
+    },
   ],
   packagerConfig: {
     executableName: 'Immortal Vault',

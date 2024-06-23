@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, dialog } from 'electron'
 import log from 'electron-log/main'
 
 log.info('App starting...')
@@ -17,7 +17,7 @@ if (require('electron-squirrel-startup')) {
 const createWindow = (): void => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    height: 650,
+    height: 600,
     width: 600,
     resizable: false,
     darkTheme: true,

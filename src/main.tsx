@@ -1,14 +1,4 @@
-﻿import {
-  Anchor,
-  Button,
-  Container,
-  Group,
-  Paper,
-  PasswordInput,
-  Stack,
-  TextInput,
-  Title,
-} from '@mantine/core'
+﻿import { Anchor, Button, Container, Flex, Group, PasswordInput, Stack, TextInput, Title } from '@mantine/core'
 import { useForm } from '@mantine/form'
 
 export default function Main() {
@@ -36,11 +26,11 @@ export default function Main() {
         <Title order={1} ta='center'>
           {'Sign up'}
         </Title>
-        <Title order={2} ta='center'>
+        <Title order={2} ta="center" mb={'xl'}>
           {'Create your account'}
         </Title>
 
-        <Paper withBorder shadow='md' p={30} mt={30} radius='md'>
+        <Flex direction={'column'}>
           <form onSubmit={form.onSubmit(signUp)}>
             <Stack>
               <TextInput
@@ -98,7 +88,7 @@ export default function Main() {
               </Button>
             </Group>
           </form>
-        </Paper>
+        </Flex>
       </Container>
     </div>
   )

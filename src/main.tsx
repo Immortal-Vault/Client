@@ -1,29 +1,105 @@
-﻿import { useState } from 'react'
-import { Center, Container, Flex, Loader, Title } from '@mantine/core'
+﻿import {
+  Anchor,
+  Button,
+  Container,
+  Group,
+  Paper,
+  PasswordInput,
+  Stack,
+  TextInput,
+  Title,
+} from '@mantine/core'
+import { useForm } from '@mantine/form'
 
 export default function Main() {
-  const [serverState, setServerState] = useState(false)
+  const form = useForm({
+    initialValues: {
+      email: '',
+      username: '',
+      password: '',
+    },
 
-  setInterval(async () => {
-    try {
-      await fetch('http://localhost:3001/ping', {
-        method: 'GET',
-      })
+    validate: {
+      // username: (val) => (val.length < 4 ? 'fields.username.tooLittle' : null),
+      // email: (val) => (/^\S+@\S+$/.test(val) ? null : 'fields.email.invalid'),
+      // password: (val) => (val.length < 6 ? 'fields.password.tooLittle' : null),
+    },
+  })
 
-      setServerState(true)
-    } catch {
-      setServerState(false)
-    }
-  }, 50)
+  const signUp = async () => {
+    //
+  }
 
   return (
-    <Container>
-      <Center>
-        <Flex direction={'column'} align={'center'} gap={'1rem'}>
-          <Title order={1}>Server is {serverState ? 'up2date' : 'down'}</Title>
-          {!serverState && <Loader color='blue' />}
-        </Flex>
-      </Center>
-    </Container>
+    <div>
+      <Container size={460} my={40}>
+        <Title order={1} ta='center'>
+          {'Sign up'}
+        </Title>
+        <Title order={2} ta='center'>
+          {'Create your account'}
+        </Title>
+
+        <Paper withBorder shadow='md' p={30} mt={30} radius='md'>
+          <form onSubmit={form.onSubmit(signUp)}>
+            <Stack>
+              <TextInput
+                withAsterisk
+                label={'Username'}
+                placeholder={'John Doe'}
+                value={form.values.username}
+                error={form.errors.username && form.errors.username.toString()}
+                onChange={(event) => form.setFieldValue('username', event.currentTarget.value)}
+                radius='md'
+              />
+
+              <TextInput
+                withAsterisk
+                label={'Email'}
+                placeholder={'JohnDoe@gmail.com'}
+                value={form.values.email}
+                onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
+                error={form.errors.email && form.errors.email.toString()}
+                radius='md'
+              />
+
+              <PasswordInput
+                withAsterisk
+                label={'Password'}
+                value={form.values.password}
+                onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
+                error={form.errors.password && form.errors.password.toString()}
+                radius='md'
+              />
+              <PasswordInput
+                withAsterisk
+                label={'Confirm password'}
+                value={form.values.password}
+                onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
+                error={form.errors.password && form.errors.password.toString()}
+                radius='md'
+              />
+            </Stack>
+
+            <Group justify='space-between' mt='xl'>
+              <Anchor
+                component='button'
+                type='button'
+                c='dimmed'
+                onClick={() => {
+                  //
+                }}
+                size='xs'
+              >
+                {'Already have an account? Login'}
+              </Anchor>
+              <Button type='submit' radius='xl'>
+                {'Sign up'}
+              </Button>
+            </Group>
+          </form>
+        </Paper>
+      </Container>
+    </div>
   )
 }

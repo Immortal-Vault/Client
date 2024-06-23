@@ -11,7 +11,25 @@ import { FuseV1Options, FuseVersion } from '@electron/fuses'
 import { mainConfig } from './webpack.main.config'
 import { rendererConfig } from './webpack.renderer.config'
 
+const githubToken = process.env.GITHUB_TOKEN
+
 const config: ForgeConfig = {
+  publishers: [
+    {
+      name: '@electron-forge/publisher-github',
+      config: {
+        repository: {
+          owner: 'Immortal-Vault',
+          name: 'Client'
+        },
+        authToken: githubToken,
+        draft: false,
+        prerelease: true,
+        force: true,
+        generateReleaseNotes: true,
+      }
+    }
+  ],
   packagerConfig: {
     executableName: 'Immortal Vault',
     name: 'Immortal Vault',

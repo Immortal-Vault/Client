@@ -1,5 +1,5 @@
 ﻿import { useState } from 'react'
-import { Center, Flex, Loader, Title } from '@mantine/core'
+import { Center, Container, Flex, Loader, Title } from '@mantine/core'
 
 export default function Main() {
   const [serverState, setServerState] = useState(false)
@@ -17,13 +17,13 @@ export default function Main() {
   }, 50)
 
   return (
-    <>
+    <Container>
       <Center>
         <Flex direction={'column'} align={'center'} gap={'1rem'}>
           <Title order={1}>Server is {serverState ? 'up2date' : 'down'}</Title>
           {!serverState && <Loader color='blue' />}
         </Flex>
       </Center>
-    </>
+    </Container>
   )
 }

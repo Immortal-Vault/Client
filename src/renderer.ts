@@ -26,7 +26,7 @@
  * ```
  */
 
-import './index.css'
+import '../styles/globals.css'
 import '@mantine/core/styles.css'
 import './index.tsx'
 

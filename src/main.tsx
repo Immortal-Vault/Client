@@ -33,7 +33,7 @@ export default function Main() {
     const email = formValues.email
     const password = formValues.password
 
-    const response = await fetch('http://localhost:3001/signUp', {
+    const response = await fetch(`${process.env.API_SERVER_URL}/signUp`, {
       headers: {
         'Content-Type': 'application/json',
       },

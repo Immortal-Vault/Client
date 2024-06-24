@@ -1,12 +1,23 @@
-﻿import { Anchor, Button, Container, Flex, Group, PasswordInput, Stack, TextInput, Title } from '@mantine/core'
+﻿import {
+  Anchor,
+  Button,
+  Container,
+  Flex,
+  Group,
+  PasswordInput,
+  Stack,
+  TextInput,
+  Title,
+} from '@mantine/core'
 import { useForm } from '@mantine/form'
 
 export default function Main() {
   const form = useForm({
     initialValues: {
       email: '',
-      username: '',
+      name: '',
       password: '',
+      confirmPassword: '',
     },
 
     validate: {
@@ -17,7 +28,29 @@ export default function Main() {
   })
 
   const signUp = async () => {
-    //
+    const formValues = form.values
+    const name = formValues.name
+    const email = formValues.email
+    const password = formValues.password
+
+    const response = await fetch('http://localhost:3001/signUp', {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        name,
+        email,
+        password,
+      }),
+    })
+
+    if (!response.ok) {
+      new window.Notification('Sign Up', { body: `Failed with: ${response.statusText}` })
+      return
+    }
+
+    new window.Notification('Sign Up', { body: 'Successful' })
   }
 
   return (
@@ -26,7 +59,7 @@ export default function Main() {
         <Title order={1} ta='center'>
           {'Sign up'}
         </Title>
-        <Title order={2} ta="center" mb={'xl'}>
+        <Title order={2} ta='center' mb={'xl'}>
           {'Create your account'}
         </Title>
 
@@ -37,9 +70,9 @@ export default function Main() {
                 withAsterisk
                 label={'Username'}
                 placeholder={'John Doe'}
-                value={form.values.username}
-                error={form.errors.username && form.errors.username.toString()}
-                onChange={(event) => form.setFieldValue('username', event.currentTarget.value)}
+                value={form.values.name}
+                error={form.errors.name && form.errors.name.toString()}
+                onChange={(e) => form.setFieldValue('name', e.currentTarget.value)}
                 radius='md'
               />
 
@@ -48,7 +81,7 @@ export default function Main() {
                 label={'Email'}
                 placeholder={'JohnDoe@gmail.com'}
                 value={form.values.email}
-                onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
+                onChange={(e) => form.setFieldValue('email', e.currentTarget.value)}
                 error={form.errors.email && form.errors.email.toString()}
                 radius='md'
               />
@@ -57,16 +90,16 @@ export default function Main() {
                 withAsterisk
                 label={'Password'}
                 value={form.values.password}
-                onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
+                onChange={(e) => form.setFieldValue('password', e.currentTarget.value)}
                 error={form.errors.password && form.errors.password.toString()}
                 radius='md'
               />
               <PasswordInput
                 withAsterisk
                 label={'Confirm password'}
-                value={form.values.password}
-                onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
-                error={form.errors.password && form.errors.password.toString()}
+                value={form.values.confirmPassword}
+                onChange={(e) => form.setFieldValue('confirmPassword', e.currentTarget.value)}
+                error={form.errors.confirmPassword && form.errors.confirmPassword.toString()}
                 radius='md'
               />
             </Stack>

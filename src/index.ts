@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog } from 'electron'
+import { app, BrowserWindow } from 'electron'
 import log from 'electron-log/main'
 
 log.info('App starting...')
@@ -25,6 +25,8 @@ const createWindow = (): void => {
     hasShadow: false,
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
+      contextIsolation: false,
+      nodeIntegration: true,
     },
   })
   mainWindow.setMenu(null)

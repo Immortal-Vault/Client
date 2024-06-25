@@ -10,6 +10,8 @@
   Title,
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
+import validator from 'validator'
+import passwordValidator from 'password-validator'
 
 export default function Main() {
   const form = useForm({
@@ -21,9 +23,29 @@ export default function Main() {
     },
 
     validate: {
-      // username: (val) => (val.length < 4 ? 'fields.username.tooLittle' : null),
-      // email: (val) => (/^\S+@\S+$/.test(val) ? null : 'fields.email.invalid'),
-      // password: (val) => (val.length < 6 ? 'fields.password.tooLittle' : null),
+      name: (val) => (val.length < 4 ? 'The name cannot be less than 4 characters' : null),
+      email: (val) => (validator.isEmail(val) ? null : 'Email is not valid'),
+      password: (val) => {
+        const schema = new passwordValidator()
+        schema
+          .is()
+          .min(8) // Minimum length 8
+          .is()
+          .max(100) // Maximum length 100
+          .has()
+          .uppercase() // Must have uppercase letters
+          .has()
+          .lowercase() // Must have lowercase letters
+          .has()
+          .digits(2) // Must have at least 2 digits
+          .has()
+          .not()
+          .spaces() // Should not have spaces
+
+        return !schema.validate(val)
+          ? 'Password must be no less than 8 and no more than 100 characters, must have at least one small and capital letter, at least 2 characters and no spaces'
+          : null
+      },
     },
   })
 
@@ -32,18 +54,33 @@ export default function Main() {
     const name = formValues.name
     const email = formValues.email
     const password = formValues.password
+    const confirmPassword = formValues.confirmPassword
 
-    const response = await fetch(`${process.env.API_SERVER_URL}/signUp`, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-      body: JSON.stringify({
-        name,
-        email,
-        password,
-      }),
-    })
+    if (password !== confirmPassword) {
+      new window.Notification('Sign Up', { body: 'Passwords do not match' })
+      return
+    }
+
+    let response
+
+    try {
+      response = await fetch(`${process.env.API_SERVER_URL}/signUp`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+        }),
+      })
+    } catch (error) {
+      new window.Notification('Sign Up', {
+        body: 'Immortal Vault server is down, please try again later',
+      })
+      return
+    }
 
     if (!response.ok) {
       new window.Notification('Sign Up', { body: `Failed with: ${response.statusText}` })
@@ -99,21 +136,13 @@ export default function Main() {
                 label={'Confirm password'}
                 value={form.values.confirmPassword}
                 onChange={(e) => form.setFieldValue('confirmPassword', e.currentTarget.value)}
-                error={form.errors.confirmPassword && form.errors.confirmPassword.toString()}
+                error={form.errors.password && form.errors.password.toString()}
                 radius='md'
               />
             </Stack>
 
             <Group justify='space-between' mt='xl'>
-              <Anchor
-                component='button'
-                type='button'
-                c='dimmed'
-                onClick={() => {
-                  //
-                }}
-                size='xs'
-              >
+              <Anchor component='button' type='button' c='dimmed' size='xs'>
                 {'Already have an account? Login'}
               </Anchor>
               <Button type='submit' radius='xl'>

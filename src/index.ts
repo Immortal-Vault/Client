@@ -33,6 +33,10 @@ const createWindow = (): void => {
 
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY)
 
+  if (process.env.NODE_ENV != 'production') {
+    mainWindow.webContents.openDevTools()
+  }
+
   mainWindow.webContents.session.webRequest.onBeforeSendHeaders((details, callback) => {
     callback({ requestHeaders: { Origin: '*', ...details.requestHeaders } })
   })

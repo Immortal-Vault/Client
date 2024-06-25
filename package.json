@@ -1,7 +1,7 @@
 {
   "name": "immortal-vault-client",
   "productName": "Immortal Vault",
-  "version": "0.0.5",
+  "version": "0.0.4",
   "description": "Immortal Vault Client",
   "main": ".webpack/main",
   "repository": {
@@ -64,9 +64,11 @@
     "eslint-plugin-react": "^7.34.3",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",
+    "nodejs-file-downloader": "^4.13.0",
     "prettier": "^3.3.2",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "semver": "^7.6.2"
   },
   "keywords": [],
   "author": {

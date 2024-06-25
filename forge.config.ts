@@ -12,6 +12,7 @@ import { mainConfig } from './webpack.main.config'
 import { rendererConfig } from './webpack.renderer.config'
 
 const githubToken = process.env.GITHUB_TOKEN
+const windowsIcon = './images/icon'
 
 const config: ForgeConfig = {
   publishers: [
@@ -33,13 +34,14 @@ const config: ForgeConfig = {
   packagerConfig: {
     executableName: 'Immortal Vault',
     name: 'Immortal Vault',
-    icon: './images/icon',
+    icon: windowsIcon,
     asar: true,
   },
   rebuildConfig: {},
   makers: [
     new MakerSquirrel({
       setupExe: 'Immortal Vault Setup.exe',
+      setupIcon: windowsIcon + '.ico',
     }),
     new MakerZIP({}, ['darwin']),
     new MakerRpm({}),

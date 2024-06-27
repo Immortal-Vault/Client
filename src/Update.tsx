@@ -1,6 +1,6 @@
 ﻿import { channels } from './shared/constants'
 import { useEffect, useState } from 'react'
-import { Button, Dialog, Flex, Group, Loader, Progress, Text } from '@mantine/core'
+import { Button, Dialog, Flex, Group, Progress, Text } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 
 const { ipcRenderer } = window.require('electron')

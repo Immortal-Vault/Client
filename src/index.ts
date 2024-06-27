@@ -115,10 +115,13 @@ ipcMain.on(channels.TRIGGER_UPDATE, async (event, downloadUrl) => {
   appPath.pop()
   const outputPath = appPath.join('\\')
   const fileName = downloadUrl.split('/').pop()
-  await downloadFile(downloadUrl, outputPath, fileName)
 
-  const exePath = path.join(outputPath, fileName)
-  await runExe(exePath)
+  const result = await downloadFile(downloadUrl, outputPath, fileName)
+
+  if (result) {
+    const exePath = path.join(outputPath, fileName)
+    await runExe(exePath)
+  }
 })
 
 log.info(`Immortal Vault Client ${app.getVersion()} started successfully`)

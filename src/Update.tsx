@@ -1,6 +1,6 @@
 ﻿import { channels } from './shared/constants'
 import { useEffect, useState } from 'react'
-import { Button, Dialog, Group, Text } from '@mantine/core'
+import { Button, Dialog, Flex, Group, Loader, Progress, Text } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 
 const { ipcRenderer } = window.require('electron')
@@ -9,6 +9,7 @@ export default function Update() {
   const [opened, { toggle, close }] = useDisclosure(false)
   const [newVersion, setNewVersion] = useState('')
   const [downloadUrl, setDownloadUrl] = useState('')
+  const [progress, setProgress] = useState('')
 
   useEffect(() => {
     ipcRenderer.on(channels.NEW_UPDATE, (event, args) => {
@@ -23,6 +24,9 @@ export default function Update() {
 
     ipcRenderer.send(channels.NEW_UPDATE)
 
+    ipcRenderer.on(channels.UPDATE_PROGRESS, (event, args) => {
+      setProgress(args.progress)
+    })
     return () => {
       ipcRenderer.removeAllListeners(channels.NEW_UPDATE)
     }
@@ -30,7 +34,9 @@ export default function Update() {
 
   const triggerUpdate = () => {
     ipcRenderer.send(channels.TRIGGER_UPDATE, downloadUrl)
-    close()
+    setInterval(() => {
+      ipcRenderer.send(channels.UPDATE_PROGRESS)
+    }, 100)
   }
 
   return (
@@ -41,11 +47,24 @@ export default function Update() {
         </Text>
 
         <Group align='flex-end'>
-          <Text size='sm' mb='xs' fw={500}>
-            Do you want update Immortal Vault to version {newVersion}?
-          </Text>
-          <Button onClick={triggerUpdate}>Yes</Button>
-          <Button onClick={close}>No</Button>
+          {progress === '' ? (
+            <>
+              <Text size='sm' mb='xs' fw={500}>
+                Do you want update Immortal Vault to version {newVersion}?
+              </Text>
+              <Button onClick={triggerUpdate}>Yes</Button>
+              <Button onClick={close}>No</Button>
+            </>
+          ) : (
+            <>
+              <Flex direction={'column'}>
+                <Text size='sm' mb='xs' fw={500}>
+                  Update downloading in progress
+                </Text>
+                <Progress radius='xl' value={+progress} animated />
+              </Flex>
+            </>
+          )}
         </Group>
       </Dialog>
     </>

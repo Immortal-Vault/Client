@@ -18,6 +18,7 @@ export async function downloadFile(
     url,
     directory: outputDirectory,
     fileName,
+    cloneFiles: false,
     onBeforeSave: (deducedName) => {
       log.info(`The downloaded file name will be: ${deducedName}`)
     },

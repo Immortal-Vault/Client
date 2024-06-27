@@ -111,9 +111,7 @@ ipcMain.on(channels.NEW_UPDATE, async (event, arg) => {
 ipcMain.on(channels.TRIGGER_UPDATE, async (event, downloadUrl) => {
   log.info('Update download triggered')
 
-  const appPath = app.getAppPath().split('\\')
-  appPath.pop()
-  const outputPath = appPath.join('\\')
+  const outputPath = path.join(process.env.APPDATA, 'Immortal Vault', 'Setup')
   const fileName = downloadUrl.split('/').pop()
 
   const result = await downloadFile(downloadUrl, outputPath, fileName)

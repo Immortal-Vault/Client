@@ -12,8 +12,11 @@
 import { useForm } from '@mantine/form'
 import validator from 'validator'
 import passwordValidator from 'password-validator'
+import { useNavigate } from 'react-router-dom'
+import { ROUTER_PATH } from './shared/constants'
 
-export default function Main() {
+export default function SignUp() {
+  const navigate = useNavigate()
   const form = useForm({
     initialValues: {
       email: '',
@@ -142,7 +145,13 @@ export default function Main() {
             </Stack>
 
             <Group justify='space-between' mt='xl'>
-              <Anchor component='button' type='button' c='dimmed' size='xs'>
+              <Anchor
+                component='button'
+                type='button'
+                c='dimmed'
+                size='xs'
+                onClick={() => navigate(ROUTER_PATH.SIGN_IN)}
+              >
                 {'Already have an account? Login'}
               </Anchor>
               <Button type='submit' radius='xl'>

@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
 import log from 'electron-log/main'
 import semver from 'semver'
-import { channels } from './shared/constants'
+import { CHANNELS } from './shared/constants'
 import { downloadFile, runExe } from './utils'
 import * as path from 'node:path'
 
@@ -54,7 +54,7 @@ const createWindow = (): void => {
     })
   })
 
-  log.info('Main window created')
+  log.info('SignUp window created')
 }
 
 // This method will be called when Electron has finished
@@ -79,7 +79,7 @@ app.on('activate', () => {
   }
 })
 
-ipcMain.on(channels.NEW_UPDATE, async (event, arg) => {
+ipcMain.on(CHANNELS.NEW_UPDATE, async (event, arg) => {
   log.info('Attempt to find latest update')
 
   const response = await fetch(`${process.env.API_SERVER_URL}/client-version`, {
@@ -87,7 +87,7 @@ ipcMain.on(channels.NEW_UPDATE, async (event, arg) => {
   })
 
   if (!response.ok) {
-    event.sender.send(channels.NEW_UPDATE, { available: false })
+    event.sender.send(CHANNELS.NEW_UPDATE, { available: false })
     return
   }
 
@@ -96,19 +96,19 @@ ipcMain.on(channels.NEW_UPDATE, async (event, arg) => {
   const downloadUrl = jsonResponse.downloadUrl
 
   if (!semver.gt(latestClientVersion, app.getVersion())) {
-    event.sender.send(channels.NEW_UPDATE, { available: false })
+    event.sender.send(CHANNELS.NEW_UPDATE, { available: false })
     return
   }
 
   log.info(`Update ${latestClientVersion} found`)
-  event.sender.send(channels.NEW_UPDATE, {
+  event.sender.send(CHANNELS.NEW_UPDATE, {
     available: true,
     version: latestClientVersion,
     downloadUrl,
   })
 })
 
-ipcMain.on(channels.TRIGGER_UPDATE, async (event, downloadUrl) => {
+ipcMain.on(CHANNELS.TRIGGER_UPDATE, async (event, downloadUrl) => {
   log.info('Update download triggered')
 
   const outputPath = path.join(process.env.APPDATA, 'Immortal Vault', 'Setup')

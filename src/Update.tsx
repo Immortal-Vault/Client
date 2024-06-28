@@ -1,4 +1,4 @@
-﻿import { channels } from './shared/constants'
+﻿import { CHANNELS } from './shared/constants'
 import { useEffect, useState } from 'react'
 import { Button, Dialog, Flex, Group, Progress, Text } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
@@ -12,7 +12,7 @@ export default function Update() {
   const [progress, setProgress] = useState('')
 
   useEffect(() => {
-    ipcRenderer.on(channels.NEW_UPDATE, (event, args) => {
+    ipcRenderer.on(CHANNELS.NEW_UPDATE, (event, args) => {
       if (!args.available) {
         return
       }
@@ -22,20 +22,20 @@ export default function Update() {
       toggle()
     })
 
-    ipcRenderer.send(channels.NEW_UPDATE)
+    ipcRenderer.send(CHANNELS.NEW_UPDATE)
 
-    ipcRenderer.on(channels.UPDATE_PROGRESS, (event, args) => {
+    ipcRenderer.on(CHANNELS.UPDATE_PROGRESS, (event, args) => {
       setProgress(args.progress)
     })
     return () => {
-      ipcRenderer.removeAllListeners(channels.NEW_UPDATE)
+      ipcRenderer.removeAllListeners(CHANNELS.NEW_UPDATE)
     }
   }, [])
 
   const triggerUpdate = () => {
-    ipcRenderer.send(channels.TRIGGER_UPDATE, downloadUrl)
+    ipcRenderer.send(CHANNELS.TRIGGER_UPDATE, downloadUrl)
     setInterval(() => {
-      ipcRenderer.send(channels.UPDATE_PROGRESS)
+      ipcRenderer.send(CHANNELS.UPDATE_PROGRESS)
     }, 100)
   }
 

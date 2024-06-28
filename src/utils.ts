@@ -3,7 +3,7 @@ import { promisify } from 'util'
 import log from 'electron-log/main'
 import { Downloader } from 'nodejs-file-downloader'
 import { ipcMain } from 'electron'
-import { channels } from './shared/constants'
+import { CHANNELS } from './shared/constants'
 
 const execFileAsync = promisify(execFile)
 let updateProgress = ''
@@ -28,22 +28,22 @@ export async function downloadFile(
   })
 
   try {
-    ipcMain.on(channels.UPDATE_PROGRESS, getUpdateProgress)
+    ipcMain.on(CHANNELS.UPDATE_PROGRESS, getUpdateProgress)
     const { filePath, downloadStatus } = await downloader.download()
 
     log.info(`Download file info with url: ${url}, path: ${filePath}, status: ${downloadStatus}`)
-    ipcMain.removeListener(channels.TRIGGER_UPDATE, getUpdateProgress)
+    ipcMain.removeListener(CHANNELS.TRIGGER_UPDATE, getUpdateProgress)
     return downloadStatus === 'COMPLETE'
   } catch (error) {
     log.error('Download file failed: ', error)
-    ipcMain.removeListener(channels.TRIGGER_UPDATE, getUpdateProgress)
+    ipcMain.removeListener(CHANNELS.TRIGGER_UPDATE, getUpdateProgress)
   }
 
   return false
 }
 
 async function getUpdateProgress(event: Electron.IpcMainEvent, args: any) {
-  event.sender.send(channels.UPDATE_PROGRESS, {
+  event.sender.send(CHANNELS.UPDATE_PROGRESS, {
     progress: updateProgress,
   })
 }

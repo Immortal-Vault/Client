@@ -13,9 +13,12 @@ import { useForm } from '@mantine/form'
 import { useDisclosure } from '@mantine/hooks'
 import { useNavigate } from 'react-router-dom'
 import { ROUTER_PATH } from './shared/constants'
+import { AuthContext } from './stores/Auth/AuthContext'
+import { useContext } from 'react'
 
 export default function SignIn() {
   const navigate = useNavigate()
+  const { setAuthState } = useContext(AuthContext)
   const form = useForm({
     initialValues: {
       email: '',
@@ -71,6 +74,7 @@ export default function SignIn() {
     localStorage.setItem('jwtToken', jwtToken)
 
     new window.Notification('Sign In', { body: 'Successful' })
+    setAuthState(true)
     setLoaderState.close()
 
     // redirect to main after sign In

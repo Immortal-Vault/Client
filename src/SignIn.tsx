@@ -1,4 +1,13 @@
-﻿import { Anchor, Button, Container, Group, PasswordInput, Stack, TextInput, Title } from '@mantine/core'
+﻿import {
+  Anchor,
+  Button,
+  Container,
+  Group,
+  PasswordInput,
+  Stack,
+  TextInput,
+  Title,
+} from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { useNavigate } from 'react-router-dom'
 import { ROUTER_PATH } from './shared/constants'
@@ -31,7 +40,7 @@ export default function SignIn() {
           return
         }
         case 409: {
-          new window.Notification('Sign In', { body: `Incorrect password` })
+          new window.Notification('Sign In', { body: 'Incorrect password' })
           return
         }
         default: {

@@ -88,7 +88,7 @@ export default function SignUp() {
     if (!response.ok) {
       switch (response.status) {
         case 303: {
-          new window.Notification('Sign Up', { body: `User with the same email is already exists` })
+          new window.Notification('Sign Up', { body: 'User with the same email is already exists' })
           break
         }
         default: {

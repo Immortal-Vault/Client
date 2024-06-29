@@ -3,12 +3,14 @@
   Button,
   Container,
   Group,
+  LoadingOverlay,
   PasswordInput,
   Stack,
   TextInput,
   Title,
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
+import { useDisclosure } from '@mantine/hooks'
 import { useNavigate } from 'react-router-dom'
 import { ROUTER_PATH } from './shared/constants'
 
@@ -20,31 +22,46 @@ export default function SignIn() {
       password: '',
     },
   })
+  const [loaderVisible, setLoaderState] = useDisclosure(false)
 
   const signInAccount = async () => {
+    setLoaderState.open()
     const email = form.values.email
     const password = form.values.password
 
-    const response = await fetch(`${process.env.API_SERVER_URL}/signIn`, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-    })
+    let response
+
+    try {
+      response = await fetch(`${process.env.API_SERVER_URL}/signIn`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+      })
+    } catch (error) {
+      new window.Notification('Sign In', {
+        body: 'Immortal Vault server is down, please try again later',
+      })
+      setLoaderState.close()
+      return
+    }
 
     if (!response.ok) {
       switch (response.status) {
         case 404: {
           new window.Notification('Sign In', { body: `User ${email} was not found` })
+          setLoaderState.close()
           return
         }
         case 409: {
           new window.Notification('Sign In', { body: 'Incorrect password' })
+          setLoaderState.close()
           return
         }
         default: {
           new window.Notification('Sign In', { body: `Failed with: ${await response.text()}` })
+          setLoaderState.close()
           return
         }
       }
@@ -54,6 +71,7 @@ export default function SignIn() {
     localStorage.setItem('jwtToken', jwtToken)
 
     new window.Notification('Sign In', { body: 'Successful' })
+    setLoaderState.close()
 
     // redirect to main after sign In
     navigate(ROUTER_PATH.MAIN_MENU)
@@ -66,6 +84,12 @@ export default function SignIn() {
       }}
     >
       <Container size={460} my={40}>
+        <LoadingOverlay
+          visible={loaderVisible}
+          zIndex={1000}
+          overlayProps={{ radius: 'sm', blur: 2 }}
+          loaderProps={{ color: 'orange' }}
+        />
         <Title order={1} ta='center'>
           {'Sign In'}
         </Title>

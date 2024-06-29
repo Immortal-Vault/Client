@@ -4,6 +4,7 @@
   Container,
   Flex,
   Group,
+  LoadingOverlay,
   PasswordInput,
   Stack,
   TextInput,
@@ -14,6 +15,7 @@ import validator from 'validator'
 import passwordValidator from 'password-validator'
 import { useNavigate } from 'react-router-dom'
 import { ROUTER_PATH } from './shared/constants'
+import { useDisclosure } from '@mantine/hooks'
 
 export default function SignUp() {
   const navigate = useNavigate()
@@ -51,8 +53,10 @@ export default function SignUp() {
       },
     },
   })
+  const [loaderVisible, setLoaderState] = useDisclosure(false)
 
   const signUp = async () => {
+    setLoaderState.open()
     const formValues = form.values
     const name = formValues.name
     const email = formValues.email
@@ -61,6 +65,7 @@ export default function SignUp() {
 
     if (password !== confirmPassword) {
       new window.Notification('Sign Up', { body: 'Passwords do not match' })
+      setLoaderState.close()
       return
     }
 
@@ -82,6 +87,7 @@ export default function SignUp() {
       new window.Notification('Sign Up', {
         body: 'Immortal Vault server is down, please try again later',
       })
+      setLoaderState.close()
       return
     }
 
@@ -89,14 +95,18 @@ export default function SignUp() {
       switch (response.status) {
         case 303: {
           new window.Notification('Sign Up', { body: 'User with the same email is already exists' })
-          break
+          setLoaderState.close()
+          return
         }
         default: {
           new window.Notification('Sign Up', { body: `Failed with: ${await response.text()}` })
+          setLoaderState.close()
+          return
         }
       }
     }
 
+    setLoaderState.close()
     new window.Notification('Sign Up', { body: 'Successful' })
     navigate(ROUTER_PATH.SIGN_IN)
   }
@@ -104,6 +114,12 @@ export default function SignUp() {
   return (
     <div>
       <Container size={460} my={40}>
+        <LoadingOverlay
+          visible={loaderVisible}
+          zIndex={1000}
+          overlayProps={{ radius: 'sm', blur: 2 }}
+          loaderProps={{ color: 'orange' }}
+        />
         <Title order={1} ta='center'>
           {'Sign up'}
         </Title>

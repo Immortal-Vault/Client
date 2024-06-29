@@ -86,11 +86,19 @@ export default function SignUp() {
     }
 
     if (!response.ok) {
-      new window.Notification('Sign Up', { body: `Failed with: ${response.statusText}` })
-      return
+      switch (response.status) {
+        case 303: {
+          new window.Notification('Sign Up', { body: `User with the same email is already exists` })
+          break
+        }
+        default: {
+          new window.Notification('Sign Up', { body: `Failed with: ${await response.text()}` })
+        }
+      }
     }
 
     new window.Notification('Sign Up', { body: 'Successful' })
+    navigate(ROUTER_PATH.SIGN_IN)
   }
 
   return (

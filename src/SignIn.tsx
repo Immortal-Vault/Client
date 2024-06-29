@@ -1,13 +1,4 @@
-﻿import {
-  Anchor,
-  Button,
-  Container,
-  Group,
-  PasswordInput,
-  Stack,
-  TextInput,
-  Title,
-} from '@mantine/core'
+﻿import { Anchor, Button, Container, Group, PasswordInput, Stack, TextInput, Title } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { useNavigate } from 'react-router-dom'
 import { ROUTER_PATH } from './shared/constants'
@@ -25,24 +16,38 @@ export default function SignIn() {
     const email = form.values.email
     const password = form.values.password
 
-    const response = await fetch('/api/signIn', {
+    const response = await fetch(`${process.env.API_SERVER_URL}/signIn`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
       method: 'POST',
       body: JSON.stringify({ email, password }),
     })
 
     if (!response.ok) {
       switch (response.status) {
+        case 404: {
+          new window.Notification('Sign In', { body: `User ${email} was not found` })
+          return
+        }
+        case 409: {
+          new window.Notification('Sign In', { body: `Incorrect password` })
+          return
+        }
         default: {
-          throw new Error(response.statusText)
+          new window.Notification('Sign In', { body: `Failed with: ${await response.text()}` })
+          return
         }
       }
     }
 
-    // await signIn('credentials', { email, password, redirect: false })
+    const jwtToken = (await response.json()).token
+    localStorage.setItem('jwtToken', jwtToken)
 
-    // redirect to main after sign Up
-    // navigate(ROUTER_PATH.ROOT)
-    // router.push('/main')
+    new window.Notification('Sign In', { body: 'Successful' })
+
+    // redirect to main after sign In
+    navigate(ROUTER_PATH.MAIN_MENU)
   }
 
   return (

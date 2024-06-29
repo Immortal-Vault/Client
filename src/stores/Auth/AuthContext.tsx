@@ -1,4 +1,6 @@
 ﻿import React, { createContext, useState, useEffect, ReactNode, FC } from 'react'
+import { CHANNELS, LOCAL_STORAGE } from '../../shared/constants'
+const { ipcRenderer } = window.require('electron')
 
 interface AuthContextType {
   authState: boolean
@@ -12,13 +14,22 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
-  const [authState, setAuthState] = useState<boolean>(!!localStorage.getItem('token'))
+  const [authState, setAuthState] = useState<boolean>(
+    !!localStorage.getItem(LOCAL_STORAGE.jwtToken),
+  )
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    if (token) {
-      setAuthState(true)
-    }
+    ipcRenderer.on(CHANNELS.REVOKE_AUTH, () => {
+      if (!authState) {
+        return
+      }
+
+      new window.Notification('Auth', {
+        body: 'Please sign in due to inactivity: ' + authState,
+      })
+      localStorage.removeItem(LOCAL_STORAGE.jwtToken)
+      setAuthState(false)
+    })
   }, [])
 
   return <AuthContext.Provider value={{ authState, setAuthState }}>{children}</AuthContext.Provider>

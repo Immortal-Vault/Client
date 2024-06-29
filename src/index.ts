@@ -53,8 +53,6 @@ const createWindow = (): void => {
       },
     })
   })
-
-  log.info('SignUp window created')
 }
 
 // This method will be called when Electron has finished
@@ -77,6 +75,21 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow()
   }
+})
+
+const maxInactiveTime = 180000 // 3 mins
+let lastActivityTime = Date.now()
+app.on('browser-window-focus', (event, window) => {
+  if (Date.now() - lastActivityTime > maxInactiveTime) {
+    log.info('Revoke auth via inactivity time')
+    window.webContents.send(CHANNELS.REVOKE_AUTH)
+  } else {
+    log.info('Window focused, not enough time to revoke auth')
+  }
+})
+
+app.on('browser-window-blur', () => {
+  lastActivityTime = Date.now()
 })
 
 ipcMain.on(CHANNELS.NEW_UPDATE, async (event, arg) => {
@@ -122,4 +135,4 @@ ipcMain.on(CHANNELS.TRIGGER_UPDATE, async (event, downloadUrl) => {
   }
 })
 
-log.info(`Immortal Vault Client ${app.getVersion()} started successfully`)
+log.info(`Immortal Vault Client ${app.getVersion()} started`)
